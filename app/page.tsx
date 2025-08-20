@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import searchEnginesData from "@/data/search-engines.json"
@@ -107,6 +107,10 @@ export default function EasySearchPage() {
     }
   }
 
+  const clearSearch = () => {
+    setSearchQuery("")
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 pt-[env(safe-area-inset-top,1rem)]">
@@ -138,8 +142,17 @@ export default function EasySearchPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e)}
                 onFocus={handleInputFocus}
-                className="pl-16 pr-6 py-6 text-xl bg-input border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                className="pl-16 pr-16 py-6 text-xl bg-input border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
               />
+              {searchQuery && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-6 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                  aria-label="Clear search"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              )}
             </div>
           </div>
         </div>
