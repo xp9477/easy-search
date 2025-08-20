@@ -88,19 +88,22 @@ export default function EasySearchPage() {
     if (e.key === "Enter") {
       if (engine) {
         handleSearch(engine)
-      } else if (searchEngines.length > 0) {
-        handleSearch(searchEngines[1])
+      } else {
+        ;(e.target as HTMLInputElement).blur()
       }
     }
   }
 
   const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-    e.preventDefault()
-    // Prevent default scroll behavior on mobile
     if (isMobile) {
+      const currentScrollY = window.scrollY
       setTimeout(() => {
-        window.scrollTo({ top: window.scrollY, behavior: "instant" })
-      }, 100)
+        window.scrollTo({ top: currentScrollY, behavior: "instant" })
+      }, 0)
+      // Additional timeout for iOS Safari
+      setTimeout(() => {
+        window.scrollTo({ top: currentScrollY, behavior: "instant" })
+      }, 300)
     }
   }
 
