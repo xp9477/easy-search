@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -11,16 +11,29 @@ import searchEnginesData from "@/data/search-engines.json"
 interface SearchEngine {
   name: string
   url: string
+  url_scheme?: string // Added optional url_scheme property
 }
 
 export default function EasySearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchEngines] = useState<SearchEngine[]>(searchEnginesData)
+  const [isMobile, setIsMobile] = useState(false) // Added mobile detection state
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
+      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
+      setIsMobile(mobileRegex.test(userAgent.toLowerCase()))
+    }
+
+    checkMobile()
+  }, [])
 
   const handleSearch = (engine: SearchEngine) => {
     if (!searchQuery.trim()) return
 
-    const searchUrl = engine.url.replace("{query}", encodeURIComponent(searchQuery.trim()))
+    const targetUrl = isMobile && engine.url_scheme ? engine.url_scheme : engine.url
+    const searchUrl = targetUrl.replace("{query}", encodeURIComponent(searchQuery.trim()))
     window.open(searchUrl, "_blank")
   }
 

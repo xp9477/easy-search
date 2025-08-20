@@ -21,27 +21,33 @@
   },
   {
     "name": "小红书",
-    "url": "xhsdiscover://search/result?keyword={query}"
+    "url": "https://www.xiaohongshu.com/search_result?keyword={query}&source=web_search_result_notes",
+    "url_scheme": "xhsdiscover://search/result?keyword={query}"
   },
   {
     "name": "淘宝",
-    "url": "taobao://s.taobao.com?q={query}"
+    "url": "https://s.taobao.com/search?q={query}",
+    "url_scheme": "taobao://s.taobao.com?q={query}"
   },
   {
     "name": "京东",
-    "url": "openjd://virtual?params={\"des\":\"productList\", \"keyWord\":\"{query}\", \"from\":\"search\", \"category\":\"jump\"}"
+    "url": "https://search.jd.com/Search?keyword={query}",
+    "url_scheme": "openjd://virtual?params={\"des\":\"productList\", \"keyWord\":\"{query}\", \"from\":\"search\", \"category\":\"jump\"}"
   },
   {
     "name": "拼多多",
-    "url": "pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key={query}"
+    "url": "https://mobile.yangkeduo.com/search_result.html?search_key={query}",
+    "url_scheme": "pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key={query}"
   },
   {
     "name": "抖音",
-    "url": "snssdk1128://search/tabs?keyword={query}"
+    "url": "https://www.douyin.com/search/{query}",
+    "url_scheme": "snssdk1128://search/tabs?keyword={query}"
   },
   {
     "name": "Bilibili",
-    "url": "https://search.bilibili.com/all?keyword={query}"
+    "url": "https://search.bilibili.com/all?keyword={query}",
+    "url_scheme": "bilibili://search?keyword={query}"
   },
   {
     "name": "Zlibrary",
@@ -57,11 +63,13 @@
   },
   {
     "name": "高德地图",
-    "url": "iosamap://navi?sourceApplication=applicationName&poiname={query}"
+    "url": "https://www.amap.com/search?query={query}",
+    "url_scheme": "iosamap://navi?sourceApplication=applicationName&poiname={query}"
   },
   {
     "name": "Music",
-    "url": "https://music.apple.com/us/search?term={query}"
+    "url": "https://music.apple.com/us/search?term={query}",
+    "url_scheme": "music://search?term={query}"
   },
   {
     "name": "闲鱼",
@@ -69,6 +77,7 @@
   },
   {
     "name": "ChatGPT",
-    "url": "chatgpt://chat.openai.com/?model=gpt-4o&q={query}"
+    "url": "https://chat.openai.com/?model=gpt-4o&q={query}",
+    "url_scheme": "chatgpt://chat.openai.com/?model=gpt-4o&q={query}"
   }
 ]
