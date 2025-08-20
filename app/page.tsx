@@ -56,7 +56,7 @@ export default function EasySearchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 pt-[env(safe-area-inset-top,1rem)]">
       <div className="w-full max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
