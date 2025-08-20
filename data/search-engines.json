@@ -1,0 +1,74 @@
+[
+  {
+    "name": "百度",
+    "url": "https://www.baidu.com/s?wd={query}"
+  },
+  {
+    "name": "Google",
+    "url": "https://www.google.com/search?q={query}"
+  },
+  {
+    "name": "YouTube",
+    "url": "https://www.youtube.com/results?search_query={query}"
+  },
+  {
+    "name": "GitHub",
+    "url": "https://github.com/search?q={query}"
+  },
+  {
+    "name": "知乎",
+    "url": "https://www.zhihu.com/search?type=content&q={query}"
+  },
+  {
+    "name": "小红书",
+    "url": "xhsdiscover://search/result?keyword={query}"
+  },
+  {
+    "name": "淘宝",
+    "url": "taobao://s.taobao.com?q={query}"
+  },
+  {
+    "name": "京东",
+    "url": "openjd://virtual?params={\"des\":\"productList\", \"keyWord\":\"{query}\", \"from\":\"search\", \"category\":\"jump\"}"
+  },
+  {
+    "name": "拼多多",
+    "url": "pinduoduo://com.xunmeng.pinduoduo/search_result.html?search_key={query}"
+  },
+  {
+    "name": "抖音",
+    "url": "snssdk1128://search/tabs?keyword={query}"
+  },
+  {
+    "name": "Bilibili",
+    "url": "https://search.bilibili.com/all?keyword={query}"
+  },
+  {
+    "name": "Zlibrary",
+    "url": "https://zh.zlib.by/s/{query}?"
+  },
+  {
+    "name": "Appstorrent",
+    "url": "https://appstorrent.ru/?story={query}&do=search&subaction=search"
+  },
+  {
+    "name": "MoviePilot",
+    "url": "https://mp.990226.xyz:50443/#/browse/media/search?title={query}&type=media"
+  },
+  {
+    "name": "高德地图",
+    "url": "iosamap://navi?sourceApplication=applicationName&poiname={query}"
+  },
+  {
+    "name": "Music",
+    "url": "https://music.apple.com/us/search?term={query}"
+  },
+  {
+    "name": "闲鱼",
+    "url": "https://www.goofish.com/search?q={query}"
+  },
+  {
+    "name": "ChatGPT",
+    "url": "chatgpt://chat.openai.com/?model=gpt-4o&q={query}"
+  }
+]
