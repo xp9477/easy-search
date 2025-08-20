@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -18,6 +19,7 @@ export default function EasySearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [searchEngines] = useState<SearchEngine[]>(searchEnginesData)
   const [isMobile, setIsMobile] = useState(false) // Added mobile detection state
+  const searchParams = useSearchParams() // Added URL search params hook
 
   useEffect(() => {
     const checkMobile = () => {
@@ -27,7 +29,12 @@ export default function EasySearchPage() {
     }
 
     checkMobile()
-  }, [])
+
+    const keywordParam = searchParams.get("keyword")
+    if (keywordParam) {
+      setSearchQuery(decodeURIComponent(keywordParam))
+    }
+  }, [searchParams])
 
   const handleSearch = (engine: SearchEngine) => {
     if (!searchQuery.trim()) return
