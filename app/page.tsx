@@ -12,14 +12,54 @@ import searchEnginesData from "@/data/search-engines.json"
 interface SearchEngine {
   name: string
   url: string
-  url_scheme?: string // Added optional url_scheme property
+  url_scheme?: string
 }
+
+const CACHE_KEY = "easysearch_engines_cache"
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
 export default function EasySearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
-  const [searchEngines] = useState<SearchEngine[]>(searchEnginesData)
-  const [isMobile, setIsMobile] = useState(false) // Added mobile detection state
-  const searchParams = useSearchParams() // Added URL search params hook
+  const [searchEngines, setSearchEngines] = useState<SearchEngine[]>([])
+  const [isMobile, setIsMobile] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    const loadSearchEngines = () => {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY)
+        if (cached) {
+          const { data, timestamp } = JSON.parse(cached)
+          const now = Date.now()
+
+          // Check if cache is still valid (within 24 hours)
+          if (now - timestamp < CACHE_EXPIRY) {
+            setSearchEngines(data)
+            setIsLoading(false)
+            return
+          }
+        }
+
+        // Load from JSON and cache it
+        setSearchEngines(searchEnginesData)
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({
+            data: searchEnginesData,
+            timestamp: Date.now(),
+          }),
+        )
+        setIsLoading(false)
+      } catch (error) {
+        // Fallback to direct JSON import if localStorage fails
+        setSearchEngines(searchEnginesData)
+        setIsLoading(false)
+      }
+    }
+
+    loadSearchEngines()
+  }, [])
 
   useEffect(() => {
     const checkMobile = () => {
@@ -49,10 +89,30 @@ export default function EasySearchPage() {
       if (engine) {
         handleSearch(engine)
       } else if (searchEngines.length > 0) {
-        // Default to first search engine (Google) when pressing Enter in search bar
-        handleSearch(searchEngines[1]) // Google is at index 1
+        handleSearch(searchEngines[1])
       }
     }
+  }
+
+  const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.preventDefault()
+    // Prevent default scroll behavior on mobile
+    if (isMobile) {
+      setTimeout(() => {
+        window.scrollTo({ top: window.scrollY, behavior: "instant" })
+      }, 100)
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 pt-[env(safe-area-inset-top,1rem)]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Loading search engines...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -74,6 +134,7 @@ export default function EasySearchPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e)}
+                onFocus={handleInputFocus}
                 className="pl-16 pr-6 py-6 text-xl bg-input border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
               />
             </div>
