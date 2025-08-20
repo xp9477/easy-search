@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   description: "一站式搜索平台，支持Google、百度、必应等多个搜索引擎",
   generator: "v0.app",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
     apple: "/apple-touch-icon.png",
   },
   appleWebApp: {
