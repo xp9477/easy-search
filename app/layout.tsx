@@ -5,7 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "EasySearch - 多平台搜索聚合器",
+  title: "EasySearch",
   description: "一站式搜索平台，支持Google、百度、必应等多个搜索引擎",
   generator: "v0.app",
   icons: {
