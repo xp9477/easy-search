@@ -45,16 +45,16 @@ export default function EasySearchPage() {
           </h1>
 
           {/* Search Bar */}
-          <div className="relative max-w-2xl mx-auto mb-8">
+          <div className="relative max-w-3xl mx-auto mb-8">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground h-5 w-5" />
+              <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-muted-foreground h-6 w-6" />
               <Input
                 type="text"
                 placeholder="Enter your search query..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => handleKeyPress(e)}
-                className="pl-12 pr-4 py-4 text-lg bg-input border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
+                className="pl-16 pr-6 py-6 text-xl bg-input border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
               />
             </div>
           </div>
@@ -68,11 +68,9 @@ export default function EasySearchPage() {
               variant="outline"
               onClick={() => handleSearch(engine)}
               onKeyPress={(e) => handleKeyPress(e, engine)}
-              className="h-16 bg-card hover:bg-accent hover:text-accent-foreground border-border rounded-lg shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 focus:ring-2 focus:ring-primary"
+              className="h-16 bg-card hover:bg-gray-50 border-border rounded-lg shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 focus:ring-2 focus:ring-primary"
             >
-              <span className="text-sm font-medium text-card-foreground group-hover:text-accent-foreground">
-                {engine.name}
-              </span>
+              <span className="text-sm font-medium text-card-foreground">{engine.name}</span>
             </Button>
           ))}
         </div>
