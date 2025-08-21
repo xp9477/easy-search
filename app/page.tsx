@@ -17,6 +17,7 @@ interface SearchEngine {
 
 const CACHE_KEY = "easysearch_engines_cache"
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
+const CACHE_VERSION = "1.0.1" // Increment this when search engines data changes
 
 export default function EasySearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -31,29 +32,30 @@ export default function EasySearchPage() {
       try {
         const cached = localStorage.getItem(CACHE_KEY)
         if (cached) {
-          const { data, timestamp } = JSON.parse(cached)
+          const { data, timestamp, version } = JSON.parse(cached)
           const now = Date.now()
 
-          // Check if cache is still valid (within 24 hours)
-          if (now - timestamp < CACHE_EXPIRY) {
+          if (now - timestamp < CACHE_EXPIRY && version === CACHE_VERSION) {
             setSearchEngines(data)
             setIsLoading(false)
             return
+          } else {
+            localStorage.removeItem(CACHE_KEY)
           }
         }
 
-        // Load from JSON and cache it
         setSearchEngines(searchEnginesData)
         localStorage.setItem(
           CACHE_KEY,
           JSON.stringify({
             data: searchEnginesData,
             timestamp: Date.now(),
+            version: CACHE_VERSION,
           }),
         )
         setIsLoading(false)
       } catch (error) {
-        // Fallback to direct JSON import if localStorage fails
+        console.error("Cache error:", error)
         setSearchEngines(searchEnginesData)
         setIsLoading(false)
       }
@@ -107,7 +109,6 @@ export default function EasySearchPage() {
       setTimeout(() => {
         window.scrollTo({ top: currentScrollY, behavior: "instant" })
       }, 0)
-      // Additional timeout for iOS Safari
       setTimeout(() => {
         window.scrollTo({ top: currentScrollY, behavior: "instant" })
       }, 300)
