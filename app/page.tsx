@@ -116,6 +116,9 @@ export default function EasySearchPage() {
 
   const clearSearch = () => {
     setSearchQuery("")
+    if (searchInputRef.current) {
+      searchInputRef.current.focus()
+    }
   }
 
   if (isLoading) {
