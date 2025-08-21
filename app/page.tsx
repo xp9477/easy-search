@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { Search, X } from "lucide-react"
 import { Input } from "@/components/ui/input"
@@ -24,6 +24,7 @@ export default function EasySearchPage() {
   const [isMobile, setIsMobile] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const searchParams = useSearchParams()
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     const loadSearchEngines = () => {
@@ -74,6 +75,12 @@ export default function EasySearchPage() {
     if (keywordParam) {
       setSearchQuery(decodeURIComponent(keywordParam))
     }
+
+    setTimeout(() => {
+      if (searchInputRef.current) {
+        searchInputRef.current.focus()
+      }
+    }, 100)
   }, [searchParams])
 
   const handleSearch = (engine: SearchEngine) => {
@@ -136,6 +143,7 @@ export default function EasySearchPage() {
             <div className="relative">
               <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-muted-foreground h-6 w-6" />
               <Input
+                ref={searchInputRef}
                 type="text"
                 placeholder="Enter your search query..."
                 value={searchQuery}

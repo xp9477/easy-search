@@ -61,7 +61,8 @@
   },
   {
     "name": "闲鱼",
-    "url": "https://www.goofish.com/search?q={query}"
+    "url": "https://www.goofish.com/search?q={query}",
+    "url_scheme": "fleamarket://search_items?keyWord={query}&searchType=0"
   },
   {
     "name": "Zlibrary",
@@ -77,12 +78,16 @@
   },
   {
     "name": "Music",
-    "url": "https://music.apple.com/us/search?term={query}",
-    "url_scheme": "music://search?term={query}"
+    "url": "itmss://itunes.apple.com/search?term={query}",
+    "url_scheme": "itmss://itunes.apple.com/search?term={query}"
   },
   {
     "name": "高德地图",
-    "url": "https://www.amap.com/search?query={query}",
-    "url_scheme": "iosamap://navi?sourceApplication=applicationName&poiname={query}"
+    "url": "https://www.amap.com/search?query={query}"
+  },
+  {
+    "name": "App Store",
+    "url": "itms-apps://search.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?media=software&term={query}",
+    "url_scheme": "itms-apps://search.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?media=software&term={query}"
   }
 ]
