@@ -62,7 +62,7 @@
   {
     "name": "闲鱼",
     "url": "https://www.goofish.com/search?q={query}",
-    "url_scheme": "fleamarket://search_items?keyWord={query}&searchType=0"
+    "url_scheme": "fleamarket://searchitems?keyWord={query}&searchType=0"
   },
   {
     "name": "Zlibrary",
