@@ -17,7 +17,7 @@ interface SearchEngine {
 
 const CACHE_KEY = "easysearch_engines_cache"
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
-const CACHE_VERSION = "1.0.1" // Increment this when search engines data changes
+const CACHE_VERSION = "1.0.2" // Increment this when search engines data changes
 
 export default function EasySearchPage() {
   const [searchQuery, setSearchQuery] = useState("")
