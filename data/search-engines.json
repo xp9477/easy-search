@@ -77,6 +77,10 @@
     "url": "https://mp.990226.xyz:50443/#/browse/media/search?title={query}&type=media"
   },
   {
+    "name": "MP-JJ专用",
+    "url": "https://mpjj.iepose.cn/#/browse/media/search?title={query}&type=media"
+  },
+  {
     "name": "Music",
     "url": "itmss://itunes.apple.com/search?term={query}",
     "url_scheme": "itmss://itunes.apple.com/search?term={query}"
