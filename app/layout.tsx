@@ -10,16 +10,23 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
+  themeColor: "#000000",
 }
 
 export const metadata: Metadata = {
-  title: "EasySearch",
-  description: "一站式搜索平台，支持Google、百度、必应等多个搜索引擎",
+  title: "EasySearch - 聚合搜索工具",
+  description: "在一个界面快速选择多个搜索引擎进行搜索，支持百度、Google、小红书、抖音、YouTube等20+平台",
   generator: "v0.app",
+  manifest: "/manifest.json",
   icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/apple-touch-icon.png",
+    icon: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/icon-192.png",
+    apple: [
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
   },
   appleWebApp: {
     capable: true,
