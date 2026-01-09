@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import dynamic from 'next/dynamic'
-import { CACHE_CONFIG, type SearchEngine } from '@/data/config'
+import { type SearchEngine } from '@/data/config'
 
 // 懒加载搜索引擎网格组件
 const SearchEngineGrid = dynamic(() => import('@/components/search-engine-grid'), {
@@ -34,48 +34,18 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
     const searchParams = useSearchParams()
     const searchInputRef = useRef<HTMLInputElement>(null)
 
-    useEffect(() => {
-        // 检查缓存更新（可选：如果需要动态更新搜索引擎）
-        const loadSearchEngines = () => {
-            try {
-                const cached = localStorage.getItem(CACHE_CONFIG.KEY)
-                if (cached) {
-                    const { data, timestamp, version } = JSON.parse(cached)
-                    const now = Date.now()
-
-                    if (now - timestamp < CACHE_CONFIG.EXPIRY && version === CACHE_CONFIG.VERSION) {
-                        setSearchEngines(data)
-                        return
-                    } else {
-                        localStorage.removeItem(CACHE_CONFIG.KEY)
-                    }
-                }
-
-                // 使用服务端传入的数据并缓存
-                localStorage.setItem(
-                    CACHE_CONFIG.KEY,
-                    JSON.stringify({
-                        data: initialEngines,
-                        timestamp: Date.now(),
-                        version: CACHE_CONFIG.VERSION,
-                    })
-                )
-            } catch (error) {
-                console.error('Cache error:', error)
-            }
-        }
-
-        loadSearchEngines()
-    }, [initialEngines])
-
+    // Layout effect to check for mobile device
     useEffect(() => {
         const checkMobile = () => {
             const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
             const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
             setIsMobile(mobileRegex.test(userAgent.toLowerCase()))
         }
-
         checkMobile()
+    }, [])
+
+    // Handle initial search params and focus
+    useEffect(() => {
 
         const keywordParam = searchParams.get('keyword')
         if (keywordParam) {
