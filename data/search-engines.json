@@ -13,24 +13,24 @@
     "name": "小红书",
     "url": "https://www.xiaohongshu.com/search_result?keyword={query}&source=web_search_result_notes",
     "url_scheme": "xhsdiscover://search/result?keyword={query}",
-    "category": "娱乐"
+    "category": "搜索"
   },
   {
     "name": "抖音",
     "url": "https://www.douyin.com/search/{query}",
     "url_scheme": "snssdk1128://search/tabs?keyword={query}",
-    "category": "娱乐"
+    "category": "搜索"
   },
   {
     "name": "YouTube",
     "url": "https://www.youtube.com/results?search_query={query}",
-    "category": "娱乐"
+    "category": "搜索"
   },
   {
     "name": "Bilibili",
     "url": "https://search.bilibili.com/all?keyword={query}",
     "url_scheme": "bilibili://search?keyword={query}",
-    "category": "娱乐"
+    "category": "搜索"
   },
   {
     "name": "GitHub",
@@ -81,12 +81,12 @@
   {
     "name": "Zlibrary",
     "url": "https://zh.zlib.by/s/{query}?",
-    "category": "搜索"
+    "category": "娱乐"
   },
   {
     "name": "Appstorrent",
     "url": "https://appstorrent.ru/?story={query}&do=search&subaction=search",
-    "category": "搜索"
+    "category": "娱乐"
   },
   {
     "name": "MoviePilot",
@@ -103,16 +103,5 @@
     "url": "itmss://itunes.apple.com/search?term={query}",
     "url_scheme": "itmss://itunes.apple.com/search?term={query}",
     "category": "娱乐"
-  },
-  {
-    "name": "高德地图",
-    "url": "https://www.amap.com/search?query={query}",
-    "category": "搜索"
-  },
-  {
-    "name": "App Store",
-    "url": "itms-apps://search.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?media=software&term={query}",
-    "url_scheme": "itms-apps://search.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?media=software&term={query}",
-    "category": "购物"
   }
 ]
