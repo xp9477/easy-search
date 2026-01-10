@@ -9,4 +9,5 @@ export type SearchEngine = {
     name: string
     url: string
     url_scheme?: string
+    category?: '搜索' | 'AI' | '娱乐' | '购物'
 }

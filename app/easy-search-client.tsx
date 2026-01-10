@@ -28,7 +28,11 @@ interface EasySearchClientProps {
 }
 
 export default function EasySearchClient({ searchEngines: initialEngines }: EasySearchClientProps) {
+    const CATEGORIES = ['全部', '搜索', 'AI', '娱乐', '购物'] as const
+    type Category = typeof CATEGORIES[number]
+
     const [searchQuery, setSearchQuery] = useState('')
+    const [selectedCategory, setSelectedCategory] = useState<Category>('全部')
     const [searchEngines, setSearchEngines] = useState<SearchEngine[]>(initialEngines)
     const [isMobile, setIsMobile] = useState(false)
     const searchParams = useSearchParams()
@@ -46,7 +50,6 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
 
     // Handle initial search params and focus
     useEffect(() => {
-
         const keywordParam = searchParams.get('keyword')
         if (keywordParam) {
             setSearchQuery(decodeURIComponent(keywordParam))
@@ -92,6 +95,10 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
         }
     }
 
+    const filteredEngines = searchEngines.filter(engine =>
+        selectedCategory === '全部' || engine.category === selectedCategory || (!engine.category && selectedCategory === '搜索') // Default to text search if no category? Actually my data has categories for all. But good safely.
+    )
+
     return (
         <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 pt-[env(safe-area-inset-top,1rem)]">
             <div className="w-full max-w-4xl mx-auto">
@@ -126,10 +133,26 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                             )}
                         </div>
                     </div>
+
+                    {/* Category Tabs */}
+                    <div className="flex justify-center gap-2 mb-8 flex-wrap">
+                        {CATEGORIES.map((category) => (
+                            <button
+                                key={category}
+                                onClick={() => setSelectedCategory(category)}
+                                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${selectedCategory === category
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                    }`}
+                            >
+                                {category}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Search Engine Grid - 懒加载 */}
-                <SearchEngineGrid engines={searchEngines} onSearch={handleSearch} searchQuery={searchQuery} />
+                <SearchEngineGrid engines={filteredEngines} onSearch={handleSearch} searchQuery={searchQuery} />
 
                 {/* Footer */}
                 <div className="text-center mt-16">
