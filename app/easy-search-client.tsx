@@ -11,11 +11,11 @@ import { type SearchEngine } from '@/data/config'
 // 懒加载搜索引擎网格组件
 const SearchEngineGrid = dynamic(() => import('@/components/search-engine-grid'), {
     loading: () => (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {Array.from({ length: 20 }).map((_, i) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 animate-pulse">
+            {Array.from({ length: 8 }).map((_, i) => (
                 <div
                     key={i}
-                    className="h-16 bg-card/50 border border-border rounded-lg animate-pulse"
+                    className="h-16 bg-card/50 border border-border rounded-lg"
                 />
             ))}
         </div>
@@ -100,7 +100,7 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
     )
 
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 pt-[env(safe-area-inset-top,1rem)]">
+        <div className="min-h-screen bg-background flex flex-col items-center p-4 pt-24 pb-12">
             <div className="w-full max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
@@ -141,8 +141,8 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`relative pb-2 text-sm font-medium transition-colors duration-200 ${selectedCategory === category
-                                        ? 'text-primary'
-                                        : 'text-muted-foreground hover:text-foreground'
+                                    ? 'text-primary'
+                                    : 'text-muted-foreground hover:text-foreground'
                                     }`}
                             >
                                 {category}
