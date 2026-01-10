@@ -3,7 +3,7 @@ import searchEnginesData from './search-engines.json'
 
 
 // 搜索引擎数据
-export const searchEngines = searchEnginesData
+export const searchEngines = searchEnginesData as SearchEngine[]
 
 export type SearchEngine = {
     name: string
