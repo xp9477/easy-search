@@ -28,11 +28,11 @@ interface EasySearchClientProps {
 }
 
 export default function EasySearchClient({ searchEngines: initialEngines }: EasySearchClientProps) {
-    const CATEGORIES = ['全部', '搜索', 'AI', '娱乐', '购物'] as const
+    const CATEGORIES = ['搜索', 'AI', '娱乐', '购物'] as const
     type Category = typeof CATEGORIES[number]
 
     const [searchQuery, setSearchQuery] = useState('')
-    const [selectedCategory, setSelectedCategory] = useState<Category>('全部')
+    const [selectedCategory, setSelectedCategory] = useState<Category>('搜索')
     const [searchEngines, setSearchEngines] = useState<SearchEngine[]>(initialEngines)
     const [isMobile, setIsMobile] = useState(false)
     const searchParams = useSearchParams()
@@ -96,7 +96,7 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
     }
 
     const filteredEngines = searchEngines.filter(engine =>
-        selectedCategory === '全部' || engine.category === selectedCategory || (!engine.category && selectedCategory === '搜索') // Default to text search if no category? Actually my data has categories for all. But good safely.
+        engine.category === selectedCategory || (!engine.category && selectedCategory === '搜索')
     )
 
     return (
@@ -109,7 +109,7 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                     </h1>
 
                     {/* Search Bar */}
-                    <div className="relative max-w-3xl mx-auto mb-8">
+                    <div className="relative max-w-3xl mx-auto mb-6">
                         <div className="relative">
                             <Search className="absolute left-6 top-1/2 transform -translate-y-1/2 text-muted-foreground h-6 w-6" />
                             <Input
@@ -135,17 +135,20 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                     </div>
 
                     {/* Category Tabs */}
-                    <div className="flex justify-center gap-2 mb-8 flex-wrap">
+                    <div className="flex justify-center gap-6 mb-6">
                         {CATEGORIES.map((category) => (
                             <button
                                 key={category}
                                 onClick={() => setSelectedCategory(category)}
-                                className={`px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200 ${selectedCategory === category
-                                        ? 'bg-primary text-primary-foreground'
-                                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                                className={`relative pb-2 text-sm font-medium transition-colors duration-200 ${selectedCategory === category
+                                        ? 'text-primary'
+                                        : 'text-muted-foreground hover:text-foreground'
                                     }`}
                             >
                                 {category}
+                                {selectedCategory === category && (
+                                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+                                )}
                             </button>
                         ))}
                     </div>
