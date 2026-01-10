@@ -14,6 +14,17 @@ export default withPWA({
   disable: process.env.NODE_ENV === 'development',
   runtimeCaching: [
     {
+      urlPattern: '/',
+      handler: 'StaleWhileRevalidate',
+      options: {
+        cacheName: 'start-url',
+        expiration: {
+          maxEntries: 1,
+          maxAgeSeconds: 24 * 60 * 60, // 1 day
+        },
+      },
+    },
+    {
       urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
       handler: 'CacheFirst',
       options: {
