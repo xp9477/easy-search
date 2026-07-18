@@ -43,16 +43,16 @@
     "category": "搜索"
   },
   {
+    "name": "Grok",
+    "url": "https://grok.com/?q={query}",
+    "category": "AI"
+  },
+  {
     "name": "DeepSeek",
     "url": "https://chat.deepseek.com/",
     "url_scheme": "deepseek-chat://query?text={query}",
     "category": "AI",
     "prefill": "clipboard"
-  },
-  {
-    "name": "Grok",
-    "url": "https://grok.com/?q={query}",
-    "category": "AI"
   },
   {
     "name": "ChatGPT",
