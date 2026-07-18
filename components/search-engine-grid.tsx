@@ -5,7 +5,7 @@ import type { SearchEngine } from '@/data/config'
 
 interface SearchEngineGridProps {
     engines: SearchEngine[]
-    onSearch: (engine: SearchEngine) => void
+    onSearch: (engine: SearchEngine) => void | Promise<void>
     searchQuery: string
 }
 

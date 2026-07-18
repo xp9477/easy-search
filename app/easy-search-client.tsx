@@ -33,10 +33,31 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
 
     const [searchQuery, setSearchQuery] = useState('')
     const [selectedCategory, setSelectedCategory] = useState<Category>('搜索')
-    const [searchEngines, setSearchEngines] = useState<SearchEngine[]>(initialEngines)
+    const [searchEngines] = useState<SearchEngine[]>(initialEngines)
     const [isMobile, setIsMobile] = useState(false)
+    const [toast, setToast] = useState<string | null>(null)
     const searchParams = useSearchParams()
     const searchInputRef = useRef<HTMLInputElement>(null)
+    const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    const showToast = (message: string) => {
+        setToast(message)
+        if (toastTimerRef.current) {
+            clearTimeout(toastTimerRef.current)
+        }
+        toastTimerRef.current = setTimeout(() => {
+            setToast(null)
+            toastTimerRef.current = null
+        }, 3200)
+    }
+
+    useEffect(() => {
+        return () => {
+            if (toastTimerRef.current) {
+                clearTimeout(toastTimerRef.current)
+            }
+        }
+    }, [])
 
     // Layout effect to check for mobile device
     useEffect(() => {
@@ -62,11 +83,58 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
         }, 100)
     }, [searchParams])
 
-    const handleSearch = (engine: SearchEngine) => {
-        if (!searchQuery.trim()) return
+    const handleSearch = async (engine: SearchEngine) => {
+        const query = searchQuery.trim()
+        if (!query) return
 
-        const targetUrl = isMobile && engine.url_scheme ? engine.url_scheme : engine.url
-        const searchUrl = targetUrl.replace('{query}', encodeURIComponent(searchQuery.trim()))
+        // Mobile app deep links can carry the query natively
+        if (isMobile && engine.url_scheme) {
+            const searchUrl = engine.url_scheme.replace('{query}', encodeURIComponent(query))
+            window.open(searchUrl, '_blank')
+            return
+        }
+
+        // Sites without URL prefill (e.g. DeepSeek web): open + copy for paste
+        if (engine.prefill === 'clipboard') {
+            const fallbackCopy = () => {
+                try {
+                    const textarea = document.createElement('textarea')
+                    textarea.value = query
+                    textarea.setAttribute('readonly', '')
+                    textarea.style.position = 'fixed'
+                    textarea.style.left = '-9999px'
+                    document.body.appendChild(textarea)
+                    textarea.select()
+                    const ok = document.execCommand('copy')
+                    document.body.removeChild(textarea)
+                    return ok
+                } catch {
+                    return false
+                }
+            }
+
+            // Start copy while still in the user-gesture chain
+            const copyPromise =
+                typeof navigator.clipboard?.writeText === 'function'
+                    ? navigator.clipboard.writeText(query).then(() => true).catch(() => fallbackCopy())
+                    : Promise.resolve(fallbackCopy())
+
+            // Open synchronously so popup blockers do not fire
+            const openUrl = engine.url.includes('{query}')
+                ? engine.url.replace('{query}', encodeURIComponent(query))
+                : engine.url
+            window.open(openUrl, '_blank')
+
+            const copied = await copyPromise
+            showToast(
+                copied
+                    ? '已复制到剪贴板，在输入框粘贴即可（Ctrl+V / ⌘V）'
+                    : '无法自动复制，请手动粘贴搜索内容'
+            )
+            return
+        }
+
+        const searchUrl = engine.url.replace('{query}', encodeURIComponent(query))
         window.open(searchUrl, '_blank')
     }
 
@@ -162,6 +230,15 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                     <p className="text-muted-foreground text-sm">Search across multiple platforms with one click</p>
                 </div>
             </div>
+
+            {toast && (
+                <div
+                    role="status"
+                    className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-lg bg-foreground px-4 py-3 text-sm text-background shadow-lg"
+                >
+                    {toast}
+                </div>
+            )}
         </div>
     )
 }
