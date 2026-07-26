@@ -1,39 +1,29 @@
 'use client'
 
 import type React from 'react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Search, X } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import dynamic from 'next/dynamic'
-import { type SearchEngine } from '@/data/config'
+import SearchEngineGrid from '@/components/search-engine-grid'
+import { DEFAULT_CATEGORY, getCategories, type Category, type SearchEngine } from '@/data/config'
 
-// 懒加载搜索引擎网格组件
-const SearchEngineGrid = dynamic(() => import('@/components/search-engine-grid'), {
-    loading: () => (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 animate-pulse">
-            {Array.from({ length: 8 }).map((_, i) => (
-                <div
-                    key={i}
-                    className="h-16 bg-card/50 border border-border rounded-lg"
-                />
-            ))}
-        </div>
-    ),
-    ssr: true,
-})
+const MOBILE_UA = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
+
+// 新标签页打开，并切断 window.opener（防止反向标签劫持）
+function openExternal(url: string) {
+    window.open(url, '_blank', 'noopener,noreferrer')
+}
 
 interface EasySearchClientProps {
     searchEngines: SearchEngine[]
 }
 
-export default function EasySearchClient({ searchEngines: initialEngines }: EasySearchClientProps) {
-    const CATEGORIES = ['搜索', 'AI', '娱乐', '购物'] as const
-    type Category = typeof CATEGORIES[number]
+export default function EasySearchClient({ searchEngines }: EasySearchClientProps) {
+    const categories = useMemo(() => getCategories(searchEngines), [searchEngines])
 
     const [searchQuery, setSearchQuery] = useState('')
-    const [selectedCategory, setSelectedCategory] = useState<Category>('搜索')
-    const [searchEngines] = useState<SearchEngine[]>(initialEngines)
+    const [selectedCategory, setSelectedCategory] = useState<Category>(DEFAULT_CATEGORY)
     const [isMobile, setIsMobile] = useState(false)
     const [toast, setToast] = useState<string | null>(null)
     const searchParams = useSearchParams()
@@ -61,36 +51,36 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
 
     // Layout effect to check for mobile device
     useEffect(() => {
-        const checkMobile = () => {
-            const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera
-            const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i
-            setIsMobile(mobileRegex.test(userAgent.toLowerCase()))
-        }
-        checkMobile()
+        const userAgent = navigator.userAgent || navigator.vendor || ''
+        setIsMobile(MOBILE_UA.test(userAgent))
     }, [])
 
-    // Handle initial search params and focus
+    // Handle initial search params
+    // 注意：searchParams.get() 已经做过一次解码，不要再 decodeURIComponent，
+    // 否则 ?keyword=100%25 之类的输入会抛 URIError。
     useEffect(() => {
         const keywordParam = searchParams.get('keyword')
         if (keywordParam) {
-            setSearchQuery(decodeURIComponent(keywordParam))
+            setSearchQuery(keywordParam)
         }
-
-        setTimeout(() => {
-            if (searchInputRef.current) {
-                searchInputRef.current.focus()
-            }
-        }, 100)
     }, [searchParams])
+
+    // Autofocus on desktop only：移动端自动聚焦会强行弹出键盘并顶起页面
+    useEffect(() => {
+        if (isMobile) return
+        searchInputRef.current?.focus()
+    }, [isMobile])
 
     const handleSearch = async (engine: SearchEngine) => {
         const query = searchQuery.trim()
-        if (!query) return
+        if (!query) {
+            searchInputRef.current?.focus()
+            return
+        }
 
         // Mobile app deep links can carry the query natively
         if (isMobile && engine.url_scheme) {
-            const searchUrl = engine.url_scheme.replace('{query}', encodeURIComponent(query))
-            window.open(searchUrl, '_blank')
+            openExternal(engine.url_scheme.replace('{query}', encodeURIComponent(query)))
             return
         }
 
@@ -120,10 +110,11 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                     : Promise.resolve(fallbackCopy())
 
             // Open synchronously so popup blockers do not fire
-            const openUrl = engine.url.includes('{query}')
-                ? engine.url.replace('{query}', encodeURIComponent(query))
-                : engine.url
-            window.open(openUrl, '_blank')
+            openExternal(
+                engine.url.includes('{query}')
+                    ? engine.url.replace('{query}', encodeURIComponent(query))
+                    : engine.url
+            )
 
             const copied = await copyPromise
             showToast(
@@ -134,41 +125,40 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
             return
         }
 
-        const searchUrl = engine.url.replace('{query}', encodeURIComponent(query))
-        window.open(searchUrl, '_blank')
+        openExternal(engine.url.replace('{query}', encodeURIComponent(query)))
     }
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            ; (e.target as HTMLInputElement).blur()
+            e.currentTarget.blur()
         }
     }
 
-    const handleInputFocus = (e: React.FocusEvent<HTMLInputElement>) => {
-        if (isMobile) {
-            const currentScrollY = window.scrollY
-            setTimeout(() => {
-                window.scrollTo({ top: currentScrollY, behavior: 'instant' })
-            }, 0)
-            setTimeout(() => {
-                window.scrollTo({ top: currentScrollY, behavior: 'instant' })
-            }, 300)
-        }
+    const handleInputFocus = () => {
+        if (!isMobile) return
+        // iOS 聚焦时会把页面顶上去，聚焦后把滚动位置还原
+        const currentScrollY = window.scrollY
+        const restore = () => window.scrollTo({ top: currentScrollY, behavior: 'instant' })
+        setTimeout(restore, 0)
+        setTimeout(restore, 300)
     }
 
     const clearSearch = () => {
         setSearchQuery('')
-        if (searchInputRef.current) {
-            searchInputRef.current.focus()
-        }
+        searchInputRef.current?.focus()
     }
 
-    const filteredEngines = searchEngines.filter(engine =>
-        engine.category === selectedCategory || (!engine.category && selectedCategory === '搜索')
+    const filteredEngines = useMemo(
+        () =>
+            searchEngines.filter(
+                (engine) =>
+                    (engine.category ?? DEFAULT_CATEGORY) === selectedCategory
+            ),
+        [searchEngines, selectedCategory]
     )
 
     return (
-        <div className="min-h-screen bg-background flex flex-col items-center p-4 pt-24 pb-12">
+        <main className="min-h-screen bg-background flex flex-col items-center p-4 pt-24 pb-12">
             <div className="w-full max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-12">
@@ -184,14 +174,16 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                                 ref={searchInputRef}
                                 type="text"
                                 placeholder="Enter your search query..."
+                                aria-label="搜索关键词"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                onKeyDown={handleKeyPress}
+                                onKeyDown={handleKeyDown}
                                 onFocus={handleInputFocus}
                                 className="pl-16 pr-16 py-6 text-xl bg-input border-border rounded-xl shadow-sm focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
                             />
                             {searchQuery && (
                                 <button
+                                    type="button"
                                     onClick={clearSearch}
                                     className="absolute right-6 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200"
                                     aria-label="Clear search"
@@ -204,9 +196,11 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
 
                     {/* Category Tabs */}
                     <div className="flex justify-center gap-6 mb-6">
-                        {CATEGORIES.map((category) => (
+                        {categories.map((category) => (
                             <button
                                 key={category}
+                                type="button"
+                                aria-pressed={selectedCategory === category}
                                 onClick={() => setSelectedCategory(category)}
                                 className={`relative pb-2 text-sm font-medium transition-colors duration-200 ${selectedCategory === category
                                     ? 'text-primary'
@@ -222,7 +216,7 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                     </div>
                 </div>
 
-                {/* Search Engine Grid - 懒加载 */}
+                {/* Search Engine Grid */}
                 <SearchEngineGrid engines={filteredEngines} onSearch={handleSearch} searchQuery={searchQuery} />
 
                 {/* Footer */}
@@ -231,14 +225,17 @@ export default function EasySearchClient({ searchEngines: initialEngines }: Easy
                 </div>
             </div>
 
+            <div role="status" aria-live="polite" className="sr-only">
+                {toast}
+            </div>
             {toast && (
                 <div
-                    role="status"
+                    aria-hidden="true"
                     className="fixed bottom-8 left-1/2 z-50 -translate-x-1/2 rounded-lg bg-foreground px-4 py-3 text-sm text-background shadow-lg"
                 >
                     {toast}
                 </div>
             )}
-        </div>
+        </main>
     )
 }

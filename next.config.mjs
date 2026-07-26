@@ -2,9 +2,8 @@ import withPWA from '@ducanh2912/next-pwa'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  images: {
-
-  },
+  reactStrictMode: true,
+  poweredByHeader: false,
 }
 
 export default withPWA({
