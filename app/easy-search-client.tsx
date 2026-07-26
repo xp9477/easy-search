@@ -49,10 +49,17 @@ export default function EasySearchClient({ searchEngines }: EasySearchClientProp
         }
     }, [])
 
-    // Layout effect to check for mobile device
+    // 端判断和自动聚焦必须在同一个 effect 里：
+    // 如果拆成两个，聚焦那个会先带着 isMobile 的初始值 false 跑一遍，
+    // 等 setIsMobile(true) 生效时键盘已经弹出来了。
     useEffect(() => {
         const userAgent = navigator.userAgent || navigator.vendor || ''
-        setIsMobile(MOBILE_UA.test(userAgent))
+        const mobile = MOBILE_UA.test(userAgent)
+        setIsMobile(mobile)
+        // 移动端自动聚焦会强行弹出键盘并顶起页面，只在桌面端聚焦
+        if (!mobile) {
+            searchInputRef.current?.focus()
+        }
     }, [])
 
     // Handle initial search params
@@ -64,12 +71,6 @@ export default function EasySearchClient({ searchEngines }: EasySearchClientProp
             setSearchQuery(keywordParam)
         }
     }, [searchParams])
-
-    // Autofocus on desktop only：移动端自动聚焦会强行弹出键盘并顶起页面
-    useEffect(() => {
-        if (isMobile) return
-        searchInputRef.current?.focus()
-    }, [isMobile])
 
     const handleSearch = async (engine: SearchEngine) => {
         const query = searchQuery.trim()

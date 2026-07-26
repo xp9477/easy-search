@@ -37,6 +37,16 @@ npm run dev        # http://localhost:3000
 分类列表由 [`data/config.ts`](data/config.ts) 的 `CATEGORIES` 决定，且只会显示实际有条目的分类；
 新增分类时改这一处即可。
 
+## 主题
+
+右上角按钮在「跟随系统 → 浅色 → 深色」之间循环，选择存在 `localStorage.theme`。
+深浅两套色板都在 [`app/globals.css`](app/globals.css) 的 `:root` / `.dark` 里，
+用的是同一套蓝（深色下把 `#1e90ff` 提亮成 `#4da6ff` 以保证在深底上的对比度）。
+
+> 注意：`components/ui/button.tsx` 的 `outline` variant 自带
+> `dark:bg-input/30`、`dark:hover:bg-input/50`，会盖掉 `bg-card` / `hover:bg-accent`。
+> 引擎网格因此显式写了 `dark:bg-card dark:hover:bg-accent`，新增按钮时注意同样处理。
+
 ## URL 参数
 
 `/?keyword=xxx` 可以预填搜索框，方便做浏览器自定义搜索引擎或系统分享目标。
@@ -50,11 +60,14 @@ npm run dev        # http://localhost:3000
 
 ```
 app/
-  layout.tsx             metadata / viewport / PWA manifest
+  layout.tsx             metadata / viewport / 主题 Provider
   page.tsx               Server Component，构建期注入引擎数据
   easy-search-client.tsx 搜索框、分类切换、跳转逻辑
+  globals.css            深浅两套色板
 components/
   search-engine-grid.tsx 引擎按钮网格
+  theme-provider.tsx     next-themes 封装
+  theme-toggle.tsx       右上角主题切换按钮
   ui/                    shadcn/ui (button, input)
 data/
   config.ts              分类定义与类型

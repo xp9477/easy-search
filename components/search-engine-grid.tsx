@@ -21,7 +21,10 @@ export default function SearchEngineGrid({ engines, onSearch, searchQuery }: Sea
                     onClick={() => onSearch(engine)}
                     disabled={!searchQuery.trim()}
                     title={`用 ${engine.name} 搜索`}
-                    className="h-16 bg-card hover:bg-accent border-border rounded-lg shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:hover:scale-100"
+                    // dark:* 三个类是用来盖掉 button outline variant 自带的
+                    // dark:bg-input/30 / dark:border-input / dark:hover:bg-input/50，
+                    // 否则深色下走的是 --input 而不是这里设计的 --card / --accent
+                    className="h-16 bg-card hover:bg-accent border-border dark:bg-card dark:border-border dark:hover:bg-accent rounded-lg shadow-sm transition-all duration-200 hover:shadow-md hover:scale-105 focus:ring-2 focus:ring-primary disabled:opacity-50 disabled:hover:scale-100"
                 >
                     <span className="text-sm font-medium text-card-foreground">{engine.name}</span>
                 </Button>

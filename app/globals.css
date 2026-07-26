@@ -16,11 +16,17 @@
   --secondary: #3b82f6;
   --secondary-foreground: #ffffff;
   --muted: #d1d5db;
-  --muted-foreground: #6b7280;
-  --accent: #3b82f6;
-  --accent-foreground: #ffffff;
+  /* 原 #6b7280 在 #f0f4f8 上只有 4.37:1，压线不过 WCAG AA */
+  --muted-foreground: #5b6472;
+  /*
+   * hover 底色。原本是 #3b82f6 这种高饱和蓝，配 --card-foreground 的深灰只有
+   * 2.8:1，正文级字号读不清。改成浅蓝 tint（shadcn 里 accent 本就该是弱强调色）。
+   */
+  --accent: #dbeafe;
+  --accent-foreground: #1e3a8a;
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.577 0.245 27.325);
+  /* 原本和 --destructive 同色，等于文字隐形 */
+  --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: #ffffff;
   --ring: rgba(30, 144, 255, 0.5);
@@ -41,38 +47,45 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.145 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.145 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.985 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.396 0.141 25.723);
-  --destructive-foreground: oklch(0.637 0.237 25.331);
-  --border: oklch(0.269 0 0);
-  --input: oklch(0.269 0 0);
-  --ring: oklch(0.439 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
+  /*
+   * 深色板对应浅色板的同一套蓝：浅色是「偏蓝的近白 + 道奇蓝」，
+   * 这里是「偏蓝的近黑（slate 系）+ 提亮后的道奇蓝」。
+   * 不用 shadcn 默认的中性板，那套会把 --primary 变成白色，和本设计不搭。
+   */
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --card: #1e293b;
+  --card-foreground: #e2e8f0;
+  --popover: rgba(30, 41, 59, 0.95);
+  --popover-foreground: #e2e8f0;
+  /* #1e90ff 在深底上偏闷，提亮到 #4da6ff：对 --background 约 7:1 */
+  --primary: #4da6ff;
+  --primary-foreground: #0b1220;
+  --secondary: #60a5fa;
+  --secondary-foreground: #0b1220;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  /* 卡片 hover 态：从 --card(#1e293b) 蓝移，和浅色板同一个方向 */
+  --accent: #1e3a8a;
+  --accent-foreground: #dbeafe;
+  --destructive: oklch(0.637 0.237 25.331);
+  --destructive-foreground: #0b1220;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: rgba(77, 166, 255, 0.5);
+  --chart-1: #4da6ff;
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.439 0 0);
+  --sidebar: #1e293b;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #4da6ff;
+  --sidebar-primary-foreground: #0b1220;
+  --sidebar-accent: #0f172a;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #334155;
+  --sidebar-ring: rgba(77, 166, 255, 0.5);
 }
 
 @theme inline {

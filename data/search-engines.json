@@ -43,6 +43,12 @@
     "category": "搜索"
   },
   {
+    "name": "X",
+    "url": "https://x.com/search?q={query}&src=typed_query",
+    "url_scheme": "twitter://search?query={query}",
+    "category": "搜索"
+  },
+  {
     "name": "Grok",
     "url": "https://grok.com/?q={query}",
     "category": "AI"
